@@ -1,0 +1,6 @@
+uploads/
+db_data/
+ldap_data/
+ldap_config/
+.env
+.DS_Store

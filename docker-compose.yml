@@ -1,0 +1,99 @@
+services:
+  php-app:
+    image: mcozzares/tfg-php
+    container_name: php-app
+    restart: unless-stopped
+    depends_on:
+      - db
+      - openldap
+    environment:
+      - DB_HOST=db
+      - DB_NAME=cvportal
+      - DB_USER=cvuser
+      - DB_PASS=cvpass
+      - LDAP_HOST=openldap
+      - LDAP_PORT=389
+      - LDAP_BASE_DN=dc=cvportal,dc=local
+      - LDAP_ADMIN_DN=cn=admin,dc=cvportal,dc=local
+      - LDAP_ADMIN_PASS=adminpass
+    ports:
+      - "8081:80"
+    volumes:
+      - ./php-app:/var/www/html
+      - php_uploads:/var/www/html/uploads
+
+  db:
+    image: mariadb:11
+    container_name: cv-db
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=superseguro
+      - MYSQL_DATABASE=cvportal
+      - MYSQL_USER=cvuser
+      - MYSQL_PASSWORD=cvpass
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./php-app/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    ports:
+      - "3306:3306"
+
+  openldap:
+    image: mcozzares/tfg-ldap
+    container_name: openldap
+    command: --copy-service
+    environment:
+      - LDAP_ORGANISATION="CVPortal Inc"
+      - LDAP_DOMAIN=cvportal.local
+      - LDAP_ADMIN_PASSWORD=adminpass
+      - LDAP_BASE_DN=dc=cvportal,dc=local
+    ports:
+      - "389:389"
+      - "636:636"
+    volumes:
+      - ldap_data:/var/lib/ldap
+      - ldap_config:/etc/ldap/slapd.d
+
+  phpldapadmin:
+    image: osixia/phpldapadmin:0.9.0
+    container_name: phpldapadmin
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=openldap
+      - PHPLDAPADMIN_HTTPS=false
+    ports:
+      - "8083:80"
+    depends_on:
+      - openldap
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    depends_on:
+      - php-app
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+    - 9090:9090
+    volumes:
+    - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+    - 3000:3000
+
+
+volumes:
+  php_uploads:
+  db_data:
+  ldap_data:
+  ldap_config:
+  prometheus:

@@ -1,0 +1,68 @@
+# People, cvportal.local
+dn: ou=People,dc=cvportal,dc=local
+objectClass: organizationalUnit
+ou: People
+
+# Groups, cvportal.local
+dn: ou=Groups,dc=cvportal,dc=local
+objectClass: organizationalUnit
+ou: Groups
+
+# it, Groups, cvportal.local
+dn: cn=it,ou=Groups,dc=cvportal,dc=local
+objectClass: posixGroup
+cn: it
+gidNumber: 5000
+
+# rrhh, Groups, cvportal.local
+dn: cn=rrhh,ou=Groups,dc=cvportal,dc=local
+objectClass: posixGroup
+cn: rrhh
+gidNumber: 5001
+
+# ituser, People, cvportal.local
+dn: cn=ituser,ou=People,dc=cvportal,dc=local
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+cn: ituser
+sn: Admin
+givenName: IT
+uid: ituser
+uidNumber: 1000
+gidNumber: 5000
+homeDirectory: /home/ituser
+loginShell: /bin/bash
+userPassword:: aXRwYXNzd29yZA==
+description: IT Department
+
+# rrhhuser, People, cvportal.local
+dn: cn=rrhhuser,ou=People,dc=cvportal,dc=local
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+cn: rrhhuser
+sn: User
+givenName: RRHH
+uid: rrhhuser
+uidNumber: 1001
+gidNumber: 5001
+homeDirectory: /home/rrhhuser
+loginShell: /bin/bash
+userPassword:: cnJoaHBhc3N3b3Jk
+description: Human Resources
+
+# Marcos Collado Cañizares, People, cvportal.local
+dn:: Y249TWFyY29zIENvbGxhZG8gQ2HDsWl6YXJlcyxvdT1QZW9wbGUsZGM9Y3Zwb3J0YWwsZGM9b
+ G9jYWw=
+givenName: Marcos
+sn:: Q29sbGFkbyBDYcOxaXphcmVz
+cn:: TWFyY29zIENvbGxhZG8gQ2HDsWl6YXJlcw==
+uid: marcos.collado
+userPassword:: e01ENX1nZHliMjFMUVRjSUFOdHZZTVQ3UVZRPT0=
+uidNumber: 1002
+gidNumber: 5000
+homeDirectory: /home/users/marcos.collado
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
